@@ -1,0 +1,8 @@
+# 키
+.env
+# 작업 중간 산출물
+scripts/needs_review.json
+# 내부 문서: 공개 저장소에 올리지 않음(로컬 인수인계용)
+PRD_Gourmap.md
+HANDOFF.md
+History.md

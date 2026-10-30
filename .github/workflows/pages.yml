@@ -1,0 +1,32 @@
+name: Deploy map to GitHub Pages
+
+# map/ 폴더만 정적 사이트로 배포함. 키와 내부 문서는 저장소에 올리지 않음
+on:
+  push:
+    branches: [main]
+    paths: ['map/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: map
+      - id: deployment
+        uses: actions/deploy-pages@v5

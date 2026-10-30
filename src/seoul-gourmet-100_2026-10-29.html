@@ -1,0 +1,486 @@
+<title>서울미식 100선 카탈로그</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 레이아웃: 표지 → 분야별 장(章) → 업소 목록. 카드 대신 구분선으로 나눈 2열 목록, 분야색으로 길 찾기 */
+:root {
+  --bg: #F3F5F2;
+  --surface: #FAFBF9;
+  --ink: #15201C;
+  --muted: #56635D;
+  --line: #D5DBD6;
+  --accent: #1C5A4C;
+  --accent-ink: #FFFFFF;
+  --c-kr: #A33A2C;
+  --c-we: #2C5C9A;
+  --c-as: #86660E;
+  --c-gr: #55606B;
+  --c-pb: #2D7A47;
+  --c-bp: #6A4BA8;
+  --c-cd: #B8396B;
+  --font-display: "Nanum Myeongjo", "Noto Serif KR", "Apple SD Gothic Neo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1513; --surface: #151C19; --ink: #E7ECE9; --muted: #98A59F; --line: #2A332F;
+    --accent: #7FC4B0; --accent-ink: #0F1513;
+    --c-kr: #E8907F; --c-we: #8FB6EA; --c-as: #DDB955; --c-gr: #B6BDC6; --c-pb: #7DC897; --c-bp: #B8A2EC; --c-cd: #F092B6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1513; --surface: #151C19; --ink: #E7ECE9; --muted: #98A59F; --line: #2A332F;
+  --accent: #7FC4B0; --accent-ink: #0F1513;
+  --c-kr: #E8907F; --c-we: #8FB6EA; --c-as: #DDB955; --c-gr: #B6BDC6; --c-pb: #7DC897; --c-bp: #B8A2EC; --c-cd: #F092B6;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  word-break: keep-all; overflow-wrap: break-word;
+  padding-block: 0 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.wrap { max-width: 1120px; margin: 0 auto; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[data-c="kr"] { --cat: var(--c-kr); } [data-c="we"] { --cat: var(--c-we); } [data-c="as"] { --cat: var(--c-as); }
+[data-c="gr"] { --cat: var(--c-gr); } [data-c="pb"] { --cat: var(--c-pb); } [data-c="bp"] { --cat: var(--c-bp); } [data-c="cd"] { --cat: var(--c-cd); }
+
+/* 표지 */
+.cover { padding-block: 40px 28px; border-bottom: 2px solid var(--ink); }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(52px, 13vw, 132px); line-height: .98; letter-spacing: -.03em; margin: 0; text-wrap: balance; }
+h1 .n { font-family: var(--font-mono); font-weight: 500; letter-spacing: -.06em; color: var(--accent); }
+.lead { max-width: 60ch; font-size: 17px; margin: 22px 0 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 22px 0 0; padding: 0; list-style: none; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* 분야 구성 막대 */
+.toc { margin-top: 34px; }
+.toc h2 { font-size: 12px; font-family: var(--font-mono); letter-spacing: .12em; font-weight: 500; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.bar { display: flex; height: 14px; gap: 2px; }
+.bar a { flex: var(--n) 1 0; background: var(--cat); min-width: 6px; }
+.toc ol { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 4px 20px; }
+.toc li a { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; text-decoration: none; border-bottom: 1px solid var(--line); }
+.toc li a:hover .nm { text-decoration: underline; text-decoration-color: var(--cat); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.toc .sw { width: 10px; height: 10px; background: var(--cat); flex: none; align-self: center; }
+.toc .nm { font-weight: 600; }
+.toc .ct { margin-left: auto; font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* 읽는 법 */
+.guide { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 4px; }
+.guide summary { cursor: pointer; font-weight: 600; padding: 10px 0; }
+.guide dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 4px 0 8px; font-size: 14px; }
+.guide dt { font-weight: 600; }
+.guide dd { margin: 0; color: var(--muted); min-width: 0; }
+@media (max-width: 600px) { .guide dl { grid-template-columns: 1fr; gap: 0; } .guide dd { margin-bottom: 8px; } }
+
+/* 도구 막대 */
+.tools { background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 12px 10px; }
+@media (min-width: 700px) { .tools { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; } }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.field { flex: 1 1 220px; min-width: 0; }
+.field.sm { flex: 0 1 150px; }
+input[type="search"], select {
+  width: 100%; font: inherit; font-size: 14px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 2px; padding: 8px 10px; min-height: 40px;
+}
+.chips { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.chip { flex: none; font: inherit; font-size: 13px; cursor: pointer; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 2px; padding: 5px 11px; display: inline-flex; gap: 7px; align-items: center; min-height: 32px; }
+.chip i { width: 8px; height: 8px; background: var(--cat, var(--ink)); }
+.chip span { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] span { color: inherit; opacity: .8; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.meta label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.linkbtn { font: inherit; font-size: 13px; background: none; border: 0; padding: 4px 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* 장 */
+.chapter { margin-top: 44px; scroll-margin-top: 150px; }
+.chead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; border-top: 2px solid var(--ink); padding-top: 12px; }
+.chead .sw { width: 14px; height: 14px; background: var(--cat); align-self: center; flex: none; }
+.chead h2 { font-family: var(--font-display); font-weight: 800; font-size: 32px; letter-spacing: -.02em; margin: 0; line-height: 1.2; }
+.chead .en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; color: var(--muted); }
+.chead .cnt { margin-left: auto; font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
+@media (max-width: 800px) { .list { grid-template-columns: minmax(0, 1fr); } }
+.entry { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; padding: 16px 0 14px; border-bottom: 1px solid var(--line); }
+.entry .no { font-family: var(--font-mono); font-size: 13px; color: var(--cat); font-weight: 500; padding-top: 5px; font-variant-numeric: tabular-nums; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.entry h3 { font-family: var(--font-display); font-weight: 800; font-size: 21px; line-height: 1.3; margin: 0; letter-spacing: -.01em; }
+.gu { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 0 6px; border-radius: 2px; white-space: nowrap; }
+.menu { margin: 4px 0 0; font-size: 15px; }
+.menu.none { color: var(--muted); font-style: italic; }
+.addr { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.foot { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 10px; }
+.links { display: flex; flex-wrap: wrap; gap: 6px; }
+.links a { font-size: 13px; text-decoration: none; border: 1px solid var(--line); border-radius: 2px; padding: 3px 10px; min-height: 30px; display: inline-flex; align-items: center; background: var(--surface); }
+.links a:hover { border-color: var(--accent); color: var(--accent); }
+.vchip { font-size: 12px; font-weight: 500; display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+.vchip::before { content: ""; width: 9px; height: 9px; border: 1.5px solid currentColor; border-radius: 50%; }
+.vchip.ok { color: var(--accent); } .vchip.ok::before { background: currentColor; }
+.vchip.ref::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.vchip.chk::before { border-style: dashed; }
+.visit { margin-left: auto; font-size: 13px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.visit input { width: 16px; height: 16px; accent-color: var(--accent); }
+.entry.done .body-main { opacity: .5; }
+.entry.done h3 { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* 상세 패널 */
+.entry { cursor: pointer; }
+.entry:hover, .entry.sel { background: color-mix(in srgb, var(--cat) 7%, transparent); }
+.entry h3 .open { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.entry h3 .open:hover { text-decoration: underline; text-decoration-color: var(--cat); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.entry.done h3 .open { text-decoration: line-through; text-decoration-thickness: 1px; }
+.scrim { position: fixed; inset: 0; background: rgba(8, 14, 12, .45); z-index: 40; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); z-index: 50; display: flex; flex-direction: column;
+  background: var(--surface); color: var(--ink); border-left: 1px solid var(--line); box-shadow: -12px 0 32px rgba(0, 0, 0, .2);
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.dhead { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 13px; }
+.dhead .dno { color: var(--cat); font-weight: 500; }
+.dhead .dcat { display: inline-flex; gap: 7px; align-items: center; color: var(--muted); }
+.dhead .dcat i { width: 10px; height: 10px; background: var(--cat); }
+.dbtn { font: inherit; font-size: 13px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 2px; padding: 6px 12px; min-height: 36px; cursor: pointer; }
+.dbtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.dbtn:disabled { opacity: .4; cursor: default; }
+.dhead .dbtn { margin-left: auto; }
+.dbody { flex: 1; min-height: 0; overflow-y: auto; padding: 22px 20px 24px; }
+.dbody h2 { font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1.25; letter-spacing: -.02em; margin: 0; }
+.dbody .dgu { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.dl { margin: 22px 0 0; display: grid; gap: 0; }
+.dl > div { padding: 12px 0; border-top: 1px solid var(--line); min-width: 0; }
+.dl dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.dl dd { margin: 0; font-size: 15px; }
+.dl .note { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.dl .dlink { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 2px; text-decoration: none; background: var(--bg); }
+.dl .dlink:hover { border-color: var(--accent); color: var(--accent); }
+.dl .inline { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.dvisit { display: inline-flex; gap: 8px; align-items: center; margin-top: 18px; cursor: pointer; }
+.dvisit input { width: 18px; height: 18px; accent-color: var(--accent); }
+.dfoot { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-top: 1px solid var(--line); }
+.dfoot .dpos { margin: 0 auto; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 700px) {
+  .drawer { top: auto; left: 0; width: 100%; max-height: 88%; border-left: 0; border-top: 2px solid var(--ink); box-shadow: 0 -12px 32px rgba(0, 0, 0, .25); padding-left: env(safe-area-inset-left, 0px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .drawer:not([hidden]) { animation: slidein .18s ease-out; }
+  @keyframes slidein { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (max-width: 700px) { @keyframes slidein { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } } }
+}
+
+.empty { margin: 40px 0; padding: 24px; border: 1px dashed var(--line); text-align: left; }
+.colophon { margin-top: 56px; border-top: 2px solid var(--ink); padding-top: 14px; font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 80ch; }
+.colophon p { margin: 0; }
+.colophon strong { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+  <header class="cover">
+    <p class="eyebrow">With Curation · 2026 · Seoul Gourmet 100</p>
+    <h1>서울미식 <span class="n">100</span>선</h1>
+    <p class="lead">서울시가 고른 미식 100곳을 7개 분야로 묶고, 주소, 시그니처 메뉴, 인스타그램, 네이버지도 링크를 붙인 카탈로그임. 약속 장소를 정할 때 검색해서 쓰고, 다녀온 곳은 체크해서 지워 나가는 용도임.</p>
+    <ul class="facts" id="facts"></ul>
+
+    <nav class="toc" aria-label="분야별 목차">
+      <h2>분야 구성</h2>
+      <div class="bar" id="bar"></div>
+      <ol id="toc"></ol>
+    </nav>
+
+    <details class="guide">
+      <summary>이렇게 보세요</summary>
+      <dl>
+        <dt>분야</dt><dd>한식, 양식, 아시아, 그릴, 채식, 바&amp;펍, 디저트&amp;카페 순으로 묶음.</dd>
+        <dt>인스타그램</dt><dd>@계정은 공식 계정으로 확인된 곳임. #해시태그는 공식 계정이 확인되지 않아 해시태그 검색으로 연결한 곳이며, 실제 방문 후기 사진을 바로 볼 수 있음.</dd>
+        <dt>네이버지도</dt><dd>누르면 가게 검색 결과로 이동함. 영업시간, 예약과 휴무는 지도에서 최신 정보를 확인해야 함.</dd>
+        <dt>검증 표시</dt><dd>출처확인은 미쉐린과 언론 등에서 확인한 정보, 참고는 일반 정보, 확인필요는 방문 전에 메뉴를 확인해야 하는 항목임.</dd>
+        <dt>메뉴</dt><dd>파인다이닝 코스는 계절마다 구성이 바뀌므로, 메뉴는 그 집을 알게 해 주는 대표 요소로 보는 것이 맞음.</dd>
+      </dl>
+    </details>
+  </header>
+
+  <section class="tools" aria-label="찾기와 거르기">
+    <div class="row">
+      <div class="field"><label class="sr" for="q" hidden>검색</label><input id="q" type="search" placeholder="가게명, 메뉴, 주소로 검색" autocomplete="off"></div>
+      <div class="field sm"><label for="gu" hidden>지역</label><select id="gu"></select></div>
+      <div class="field sm"><label for="st" hidden>검증 상태</label><select id="st"></select></div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="분야 선택"></div>
+    <div class="meta">
+      <span aria-live="polite"><b id="shown">100</b>곳 표시 중</span>
+      <span>다녀온 곳 <b id="vcount">0</b> / 100</span>
+      <label><input type="checkbox" id="hide"> 다녀온 곳 숨기기</label>
+      <button type="button" class="linkbtn" id="reset">필터 초기화</button>
+    </div>
+  </section>
+
+  <main id="main"></main>
+
+  <footer class="colophon">
+    <p><strong>기준 명단</strong> 서울시 「2026 서울미식 100선」(2026.10.6 발표)</p>
+    <p><strong>정리</strong> 문화예술네트워크 위드(WITH), 2026.10.29 정리본을 카탈로그로 재구성함.</p>
+    <p>이 자료는 서울시 공식 명단을 바탕으로 위드가 공개 정보를 정리한 것으로, 각 업소와 무관함. 메뉴, 가격과 영업 정보는 바뀔 수 있음.</p>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dtitle" hidden>
+  <div class="dhead">
+    <span class="dno" id="dno"></span>
+    <span class="dcat"><i></i><span id="dcat"></span></span>
+    <button type="button" class="dbtn" id="dclose">닫기</button>
+  </div>
+  <div class="dbody">
+    <h2 id="dtitle"></h2>
+    <p class="dgu" id="dgu"></p>
+    <dl class="dl">
+      <div><dt>시그니처 메뉴</dt><dd id="dmenu"></dd></div>
+      <div><dt>주소</dt><dd><div class="inline"><span id="daddr"></span><button type="button" class="dbtn" id="dcopy">주소 복사</button><span class="note" id="dcopied" aria-live="polite"></span></div></dd></div>
+      <div><dt>인스타그램</dt><dd><a class="dlink" id="dig" target="_blank" rel="noopener noreferrer"></a><p class="note" id="dignote"></p></dd></div>
+      <div><dt>네이버지도</dt><dd><a class="dlink" id="dmap" target="_blank" rel="noopener noreferrer">네이버지도에서 열기</a><p class="note">영업시간, 예약과 휴무는 지도에서 최신 정보를 확인해야 함.</p></dd></div>
+      <div><dt>정보 상태</dt><dd><span class="vchip" id="dst"></span><p class="note" id="dstnote"></p></dd></div>
+    </dl>
+    <label class="dvisit"><input type="checkbox" id="dvisit"> 다녀옴으로 표시</label>
+  </div>
+  <div class="dfoot">
+    <button type="button" class="dbtn" id="dprev">이전</button>
+    <span class="dpos" id="dpos"></span>
+    <button type="button" class="dbtn" id="dnext">다음</button>
+  </div>
+</aside>
+
+<script>
+const DATA = [{"no": 1, "cat": "한식", "name": "권숙수", "addr": "서울 강남구 압구정로80길 37", "menu": "민들레국수 · 갈치찜 (계절 한식 코스)", "ig": "#권숙수", "igurl": "https://www.instagram.com/explore/tags/%EA%B6%8C%EC%88%99%EC%88%98/", "map": "https://map.naver.com/p/search/%EA%B6%8C%EC%88%99%EC%88%98%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 2, "cat": "한식", "name": "기와강", "addr": "서울 강남구 논현로152길 9", "menu": "간장게장밥&트러플 · 동치미 캐비어 · 오징어 만두", "ig": "@giwakang", "igurl": "https://www.instagram.com/giwakang/", "map": "https://map.naver.com/p/search/%EA%B8%B0%EC%99%80%EA%B0%95%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 3, "cat": "한식", "name": "꽃밥에피다", "addr": "서울 종로구 인사동16길 3-6", "menu": "보자기비빔밥 (점심 한정)", "ig": "#꽃밥에피다", "igurl": "https://www.instagram.com/explore/tags/%EA%BD%83%EB%B0%A5%EC%97%90%ED%94%BC%EB%8B%A4/", "map": "https://map.naver.com/p/search/%EA%BD%83%EB%B0%A5%EC%97%90%ED%94%BC%EB%8B%A4%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "확인"}, {"no": 4, "cat": "한식", "name": "라연", "addr": "서울 중구 동호로 249", "menu": "전통 한식 코스 (서울신라호텔 23층)", "ig": "#라연", "igurl": "https://www.instagram.com/explore/tags/%EB%9D%BC%EC%97%B0/", "map": "https://map.naver.com/p/search/%EB%9D%BC%EC%97%B0%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 5, "cat": "한식", "name": "레스토랑 주은", "addr": "서울 종로구 경희궁길 36", "menu": "절기 한식 코스 · 직접 담근 장", "ig": "@jueun_restaurant", "igurl": "https://www.instagram.com/jueun_restaurant/", "map": "https://map.naver.com/p/search/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%20%EC%A3%BC%EC%9D%80%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "확인"}, {"no": 6, "cat": "한식", "name": "리북방", "addr": "서울 마포구 마포대로1길 16", "menu": "이북식 순대 코스", "ig": "#리북방", "igurl": "https://www.instagram.com/explore/tags/%EB%A6%AC%EB%B6%81%EB%B0%A9/", "map": "https://map.naver.com/p/search/%EB%A6%AC%EB%B6%81%EB%B0%A9%20%EB%A7%88%ED%8F%AC%EA%B5%AC", "status": "확인"}, {"no": 7, "cat": "한식", "name": "면서울", "addr": "서울 강남구 선릉로 805", "menu": "생들기름면 · 비빔면 · 고사리면", "ig": "#면서울", "igurl": "https://www.instagram.com/explore/tags/%EB%A9%B4%EC%84%9C%EC%9A%B8/", "map": "https://map.naver.com/p/search/%EB%A9%B4%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 8, "cat": "한식", "name": "밍글스", "addr": "서울 강남구 도산대로67길 19", "menu": "밍글링 팟 · 장 트리오(디저트)", "ig": "#밍글스", "igurl": "https://www.instagram.com/explore/tags/%EB%B0%8D%EA%B8%80%EC%8A%A4/", "map": "https://map.naver.com/p/search/%EB%B0%8D%EA%B8%80%EC%8A%A4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 9, "cat": "한식", "name": "봉래헌", "addr": "서울 강서구 방화대로 94", "menu": "한정식 코스 (메이필드호텔 서울)", "ig": "#봉래헌", "igurl": "https://www.instagram.com/explore/tags/%EB%B4%89%EB%9E%98%ED%97%8C/", "map": "https://map.naver.com/p/search/%EB%B4%89%EB%9E%98%ED%97%8C%20%EA%B0%95%EC%84%9C%EA%B5%AC", "status": "참고"}, {"no": 10, "cat": "한식", "name": "비채나", "addr": "서울 송파구 올림픽로 300", "menu": "한식 코스 (시그니엘 서울 81층)", "ig": "#비채나", "igurl": "https://www.instagram.com/explore/tags/%EB%B9%84%EC%B1%84%EB%82%98/", "map": "https://map.naver.com/p/search/%EB%B9%84%EC%B1%84%EB%82%98%20%EC%86%A1%ED%8C%8C%EA%B5%AC", "status": "확인"}, {"no": 11, "cat": "한식", "name": "산초", "addr": "서울 강남구 도산대로46길 11", "menu": "방문 전 메뉴 확인", "ig": "#산초", "igurl": "https://www.instagram.com/explore/tags/%EC%82%B0%EC%B4%88/", "map": "https://map.naver.com/p/search/%EC%82%B0%EC%B4%88%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 12, "cat": "한식", "name": "서령 본점", "addr": "서울 중구 소월로 10", "menu": "순면 평양냉면", "ig": "#서령본점", "igurl": "https://www.instagram.com/explore/tags/%EC%84%9C%EB%A0%B9%EB%B3%B8%EC%A0%90/", "map": "https://map.naver.com/p/search/%EC%84%9C%EB%A0%B9%20%EB%B3%B8%EC%A0%90%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 13, "cat": "한식", "name": "솔밤", "addr": "서울 강남구 학동로 231", "menu": "컨템퍼러리 한식 코스", "ig": "#솔밤", "igurl": "https://www.instagram.com/explore/tags/%EC%86%94%EB%B0%A4/", "map": "https://map.naver.com/p/search/%EC%86%94%EB%B0%A4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 14, "cat": "한식", "name": "수티문", "addr": "서울 영등포구 국제금융로8길 27-8", "menu": "방문 전 메뉴 확인", "ig": "#수티문", "igurl": "https://www.instagram.com/explore/tags/%EC%88%98%ED%8B%B0%EB%AC%B8/", "map": "https://map.naver.com/p/search/%EC%88%98%ED%8B%B0%EB%AC%B8%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC", "status": "미정"}, {"no": 15, "cat": "한식", "name": "수퍼판", "addr": "서울 강남구 논현로167길 15", "menu": "한우 바싹불고기 · 한우기름 떡볶이 · 서리태 스프레드", "ig": "@superpan_seoul", "igurl": "https://www.instagram.com/superpan_seoul/", "map": "https://map.naver.com/p/search/%EC%88%98%ED%8D%BC%ED%8C%90%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 16, "cat": "한식", "name": "스와니예", "addr": "서울 강남구 강남대로 652", "menu": "시즌별 '에피소드' 코스", "ig": "#스와니예", "igurl": "https://www.instagram.com/explore/tags/%EC%8A%A4%EC%99%80%EB%8B%88%EC%98%88/", "map": "https://map.naver.com/p/search/%EC%8A%A4%EC%99%80%EB%8B%88%EC%98%88%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 17, "cat": "한식", "name": "온지음", "addr": "서울 종로구 효자로 49", "menu": "궁중·반가 음식 코스", "ig": "#온지음", "igurl": "https://www.instagram.com/explore/tags/%EC%98%A8%EC%A7%80%EC%9D%8C/", "map": "https://map.naver.com/p/search/%EC%98%A8%EC%A7%80%EC%9D%8C%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 18, "cat": "한식", "name": "우래옥", "addr": "서울 중구 창경궁로 62-29", "menu": "평양냉면 · 불고기", "ig": "#우래옥", "igurl": "https://www.instagram.com/explore/tags/%EC%9A%B0%EB%9E%98%EC%98%A5/", "map": "https://map.naver.com/p/search/%EC%9A%B0%EB%9E%98%EC%98%A5%20%EC%A4%91%EA%B5%AC", "status": "확인"}, {"no": 19, "cat": "한식", "name": "유록", "addr": "서울 중구 소공로 46", "menu": "방문 전 메뉴 확인", "ig": "#유록", "igurl": "https://www.instagram.com/explore/tags/%EC%9C%A0%EB%A1%9D/", "map": "https://map.naver.com/p/search/%EC%9C%A0%EB%A1%9D%20%EC%A4%91%EA%B5%AC", "status": "미정"}, {"no": 20, "cat": "한식", "name": "이타닉 가든", "addr": "서울 강남구 테헤란로 231", "menu": "한식 코스 (조선 팰리스)", "ig": "#이타닉가든", "igurl": "https://www.instagram.com/explore/tags/%EC%9D%B4%ED%83%80%EB%8B%89%EA%B0%80%EB%93%A0/", "map": "https://map.naver.com/p/search/%EC%9D%B4%ED%83%80%EB%8B%89%20%EA%B0%80%EB%93%A0%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 21, "cat": "한식", "name": "정식당", "addr": "서울 강남구 선릉로158길 11", "menu": "김밥 · 성게 비빔밥 · 돌하르방 디저트", "ig": "#정식당", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%95%EC%8B%9D%EB%8B%B9/", "map": "https://map.naver.com/p/search/%EC%A0%95%EC%8B%9D%EB%8B%B9%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 22, "cat": "한식", "name": "품 서울", "addr": "서울 강남구 삼성로126길 6", "menu": "모던 한식 코스", "ig": "#품서울", "igurl": "https://www.instagram.com/explore/tags/%ED%92%88%EC%84%9C%EC%9A%B8/", "map": "https://map.naver.com/p/search/%ED%92%88%20%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 23, "cat": "한식", "name": "하모", "addr": "서울 강남구 언주로 819", "menu": "진주식 한식 (진주비빔밥 · 진주냉면)", "ig": "#하모", "igurl": "https://www.instagram.com/explore/tags/%ED%95%98%EB%AA%A8/", "map": "https://map.naver.com/p/search/%ED%95%98%EB%AA%A8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 24, "cat": "한식", "name": "한국의집", "addr": "서울 중구 퇴계로36길 10", "menu": "궁중 한정식 코스", "ig": "#한국의집", "igurl": "https://www.instagram.com/explore/tags/%ED%95%9C%EA%B5%AD%EC%9D%98%EC%A7%91/", "map": "https://map.naver.com/p/search/%ED%95%9C%EA%B5%AD%EC%9D%98%EC%A7%91%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 25, "cat": "한식", "name": "한성칼국수", "addr": "서울 강남구 언주로148길 14", "menu": "칼국수", "ig": "#한성칼국수", "igurl": "https://www.instagram.com/explore/tags/%ED%95%9C%EC%84%B1%EC%B9%BC%EA%B5%AD%EC%88%98/", "map": "https://map.naver.com/p/search/%ED%95%9C%EC%84%B1%EC%B9%BC%EA%B5%AD%EC%88%98%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 26, "cat": "한식", "name": "한식공간 소반", "addr": "서울 중구 마른내로 13", "menu": "방문 전 메뉴 확인", "ig": "#한식공간소반", "igurl": "https://www.instagram.com/explore/tags/%ED%95%9C%EC%8B%9D%EA%B3%B5%EA%B0%84%EC%86%8C%EB%B0%98/", "map": "https://map.naver.com/p/search/%ED%95%9C%EC%8B%9D%EA%B3%B5%EA%B0%84%20%EC%86%8C%EB%B0%98%20%EC%A4%91%EA%B5%AC", "status": "미정"}, {"no": 27, "cat": "한식", "name": "해남천일관", "addr": "서울 서초구 반포대로39길 36-1", "menu": "떡갈비", "ig": "#해남천일관", "igurl": "https://www.instagram.com/explore/tags/%ED%95%B4%EB%82%A8%EC%B2%9C%EC%9D%BC%EA%B4%80/", "map": "https://map.naver.com/p/search/%ED%95%B4%EB%82%A8%EC%B2%9C%EC%9D%BC%EA%B4%80%20%EC%84%9C%EC%B4%88%EA%B5%AC", "status": "참고"}, {"no": 28, "cat": "양식", "name": "강민철 레스토랑", "addr": "서울 강남구 도산대로63길 18", "menu": "프렌치 코스 (트러플 반숙란 비빔밥 등)", "ig": "#강민철레스토랑", "igurl": "https://www.instagram.com/explore/tags/%EA%B0%95%EB%AF%BC%EC%B2%A0%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91/", "map": "https://map.naver.com/p/search/%EA%B0%95%EB%AF%BC%EC%B2%A0%20%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 29, "cat": "양식", "name": "기가스", "addr": "서울 중구 퇴계로6가길 30", "menu": "지중해식 해산물 요리 (제주 당일 해산물)", "ig": "#기가스", "igurl": "https://www.instagram.com/explore/tags/%EA%B8%B0%EA%B0%80%EC%8A%A4/", "map": "https://map.naver.com/p/search/%EA%B8%B0%EA%B0%80%EC%8A%A4%20%EC%A4%91%EA%B5%AC", "status": "확인"}, {"no": 30, "cat": "양식", "name": "다로베", "addr": "서울 성동구 서울숲길 51", "menu": "나폴리 화덕피자", "ig": "#다로베", "igurl": "https://www.instagram.com/explore/tags/%EB%8B%A4%EB%A1%9C%EB%B2%A0/", "map": "https://map.naver.com/p/search/%EB%8B%A4%EB%A1%9C%EB%B2%A0%20%EC%84%B1%EB%8F%99%EA%B5%AC", "status": "참고"}, {"no": 31, "cat": "양식", "name": "더 그린 테이블", "addr": "서울 종로구 율곡로 83", "menu": "프렌치 코스", "ig": "#더그린테이블", "igurl": "https://www.instagram.com/explore/tags/%EB%8D%94%EA%B7%B8%EB%A6%B0%ED%85%8C%EC%9D%B4%EB%B8%94/", "map": "https://map.naver.com/p/search/%EB%8D%94%20%EA%B7%B8%EB%A6%B0%20%ED%85%8C%EC%9D%B4%EB%B8%94%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 32, "cat": "양식", "name": "두오모", "addr": "서울 종로구 자하문로16길 5", "menu": "이탈리안 생면 파스타", "ig": "#두오모", "igurl": "https://www.instagram.com/explore/tags/%EB%91%90%EC%98%A4%EB%AA%A8/", "map": "https://map.naver.com/p/search/%EB%91%90%EC%98%A4%EB%AA%A8%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 33, "cat": "양식", "name": "라망 시크레", "addr": "서울 중구 퇴계로 67", "menu": "모던 코스 (레스케이프 호텔)", "ig": "#라망시크레", "igurl": "https://www.instagram.com/explore/tags/%EB%9D%BC%EB%A7%9D%EC%8B%9C%ED%81%AC%EB%A0%88/", "map": "https://map.naver.com/p/search/%EB%9D%BC%EB%A7%9D%20%EC%8B%9C%ED%81%AC%EB%A0%88%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 34, "cat": "양식", "name": "라미띠에", "addr": "서울 강남구 도산대로67길 30", "menu": "프렌치 코스", "ig": "#라미띠에", "igurl": "https://www.instagram.com/explore/tags/%EB%9D%BC%EB%AF%B8%EB%9D%A0%EC%97%90/", "map": "https://map.naver.com/p/search/%EB%9D%BC%EB%AF%B8%EB%9D%A0%EC%97%90%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 35, "cat": "양식", "name": "레스쁘아", "addr": "서울 강남구 도산대로56길 10", "menu": "프렌치 비스트로 요리", "ig": "#레스쁘아", "igurl": "https://www.instagram.com/explore/tags/%EB%A0%88%EC%8A%A4%EC%81%98%EC%95%84/", "map": "https://map.naver.com/p/search/%EB%A0%88%EC%8A%A4%EC%81%98%EC%95%84%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 36, "cat": "양식", "name": "레스토랑 산", "addr": "서울 강남구 언주로168길 6", "menu": "한치 숙회 · 랍스터 리조토 · 돼지국밥", "ig": "#레스토랑산", "igurl": "https://www.instagram.com/explore/tags/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%EC%82%B0/", "map": "https://map.naver.com/p/search/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%20%EC%82%B0%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 37, "cat": "양식", "name": "레스토랑 알렌", "addr": "서울 강남구 테헤란로 231", "menu": "컨템퍼러리 코스 (조선 팰리스)", "ig": "#레스토랑알렌", "igurl": "https://www.instagram.com/explore/tags/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%EC%95%8C%EB%A0%8C/", "map": "https://map.naver.com/p/search/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91%20%EC%95%8C%EB%A0%8C%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 38, "cat": "양식", "name": "리스토란테 에오", "addr": "서울 영등포구 여의대로 108", "menu": "이탈리안 코스 · 생면 파스타", "ig": "#리스토란테에오", "igurl": "https://www.instagram.com/explore/tags/%EB%A6%AC%EC%8A%A4%ED%86%A0%EB%9E%80%ED%85%8C%EC%97%90%EC%98%A4/", "map": "https://map.naver.com/p/search/%EB%A6%AC%EC%8A%A4%ED%86%A0%EB%9E%80%ED%85%8C%20%EC%97%90%EC%98%A4%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC", "status": "참고"}, {"no": 39, "cat": "양식", "name": "마테르", "addr": "서울 강남구 언주로154길 16", "menu": "방문 전 메뉴 확인", "ig": "#마테르", "igurl": "https://www.instagram.com/explore/tags/%EB%A7%88%ED%85%8C%EB%A5%B4/", "map": "https://map.naver.com/p/search/%EB%A7%88%ED%85%8C%EB%A5%B4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 40, "cat": "양식", "name": "메종조", "addr": "서울 서초구 반포대로7길 35", "menu": "샤퀴테리 · 와인", "ig": "#메종조", "igurl": "https://www.instagram.com/explore/tags/%EB%A9%94%EC%A2%85%EC%A1%B0/", "map": "https://map.naver.com/p/search/%EB%A9%94%EC%A2%85%EC%A1%B0%20%EC%84%9C%EC%B4%88%EA%B5%AC", "status": "참고"}, {"no": 41, "cat": "양식", "name": "모수 서울", "addr": "서울 용산구 회나무로41길 4", "menu": "안성재 셰프 테이스팅 코스", "ig": "#모수서울", "igurl": "https://www.instagram.com/explore/tags/%EB%AA%A8%EC%88%98%EC%84%9C%EC%9A%B8/", "map": "https://map.naver.com/p/search/%EB%AA%A8%EC%88%98%20%EC%84%9C%EC%9A%B8%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "확인"}, {"no": 42, "cat": "양식", "name": "무오키", "addr": "서울 강남구 학동로55길 12-12", "menu": "박무현 셰프 테이스팅 코스", "ig": "#무오키", "igurl": "https://www.instagram.com/explore/tags/%EB%AC%B4%EC%98%A4%ED%82%A4/", "map": "https://map.naver.com/p/search/%EB%AC%B4%EC%98%A4%ED%82%A4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 43, "cat": "양식", "name": "보르고 한남", "addr": "서울 용산구 이태원로54길 31", "menu": "이탈리안 생면 파스타", "ig": "#보르고한남", "igurl": "https://www.instagram.com/explore/tags/%EB%B3%B4%EB%A5%B4%EA%B3%A0%ED%95%9C%EB%82%A8/", "map": "https://map.naver.com/p/search/%EB%B3%B4%EB%A5%B4%EA%B3%A0%20%ED%95%9C%EB%82%A8%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "참고"}, {"no": 44, "cat": "양식", "name": "빈호", "addr": "서울 강남구 학동로43길 38", "menu": "방문 전 메뉴 확인", "ig": "#빈호", "igurl": "https://www.instagram.com/explore/tags/%EB%B9%88%ED%98%B8/", "map": "https://map.naver.com/p/search/%EB%B9%88%ED%98%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 45, "cat": "양식", "name": "세스타", "addr": "서울 용산구 한남대로20길 21-18", "menu": "컨템퍼러리 코스", "ig": "#세스타", "igurl": "https://www.instagram.com/explore/tags/%EC%84%B8%EC%8A%A4%ED%83%80/", "map": "https://map.naver.com/p/search/%EC%84%B8%EC%8A%A4%ED%83%80%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "참고"}, {"no": 46, "cat": "양식", "name": "알라 프리마", "addr": "서울 강남구 학동로17길 13", "menu": "컨템퍼러리 코스", "ig": "#알라프리마", "igurl": "https://www.instagram.com/explore/tags/%EC%95%8C%EB%9D%BC%ED%94%84%EB%A6%AC%EB%A7%88/", "map": "https://map.naver.com/p/search/%EC%95%8C%EB%9D%BC%20%ED%94%84%EB%A6%AC%EB%A7%88%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 47, "cat": "양식", "name": "제로 컴플렉스", "addr": "서울 용산구 서빙고로59길 11-8", "menu": "채소 중심 컨템퍼러리 코스", "ig": "#제로컴플렉스", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%9C%EB%A1%9C%EC%BB%B4%ED%94%8C%EB%A0%89%EC%8A%A4/", "map": "https://map.naver.com/p/search/%EC%A0%9C%EB%A1%9C%20%EC%BB%B4%ED%94%8C%EB%A0%89%EC%8A%A4%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "참고"}, {"no": 48, "cat": "양식", "name": "테이블포포", "addr": "서울 용산구 대사관로31길 25-12", "menu": "제철 해산물 유러피안 코스", "ig": "#테이블포포", "igurl": "https://www.instagram.com/explore/tags/%ED%85%8C%EC%9D%B4%EB%B8%94%ED%8F%AC%ED%8F%AC/", "map": "https://map.naver.com/p/search/%ED%85%8C%EC%9D%B4%EB%B8%94%ED%8F%AC%ED%8F%AC%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "확인"}, {"no": 49, "cat": "양식", "name": "페리지", "addr": "서울 강남구 봉은사로68길 6-5", "menu": "방문 전 메뉴 확인", "ig": "#페리지", "igurl": "https://www.instagram.com/explore/tags/%ED%8E%98%EB%A6%AC%EC%A7%80/", "map": "https://map.naver.com/p/search/%ED%8E%98%EB%A6%AC%EC%A7%80%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 50, "cat": "양식", "name": "포노 부오노", "addr": "서울 강남구 도산대로45길 8-7", "menu": "1++ 한우 소보로 볶음밥 · 브리치즈 웰링턴", "ig": "#포노부오노", "igurl": "https://www.instagram.com/explore/tags/%ED%8F%AC%EB%85%B8%EB%B6%80%EC%98%A4%EB%85%B8/", "map": "https://map.naver.com/p/search/%ED%8F%AC%EB%85%B8%20%EB%B6%80%EC%98%A4%EB%85%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 51, "cat": "아시아", "name": "가겐 바이 최준호", "addr": "서울 강남구 압구정로80길 19-1", "menu": "쿠로기 소면 · 은어 소금구이 · 핫슨 (가이세키)", "ig": "@gaggen_seoul", "igurl": "https://www.instagram.com/gaggen_seoul/", "map": "https://map.naver.com/p/search/%EA%B0%80%EA%B2%90%20%EB%B0%94%EC%9D%B4%20%EC%B5%9C%EC%A4%80%ED%98%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 52, "cat": "아시아", "name": "계향각", "addr": "서울 종로구 동숭길 86", "menu": "동파육 · 팔보오리 · 고구마빠스 (수원식단 중식)", "ig": "#계향각", "igurl": "https://www.instagram.com/explore/tags/%EA%B3%84%ED%96%A5%EA%B0%81/", "map": "https://map.naver.com/p/search/%EA%B3%84%ED%96%A5%EA%B0%81%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "확인"}, {"no": 53, "cat": "아시아", "name": "무니", "addr": "서울 강남구 도산대로70길 26", "menu": "가이세키 코스", "ig": "#무니", "igurl": "https://www.instagram.com/explore/tags/%EB%AC%B4%EB%8B%88/", "map": "https://map.naver.com/p/search/%EB%AC%B4%EB%8B%88%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 54, "cat": "아시아", "name": "미토우", "addr": "서울 강남구 도산대로70길 24", "menu": "제철 솥밥 (일식 코스)", "ig": "#미토우", "igurl": "https://www.instagram.com/explore/tags/%EB%AF%B8%ED%86%A0%EC%9A%B0/", "map": "https://map.naver.com/p/search/%EB%AF%B8%ED%86%A0%EC%9A%B0%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 55, "cat": "아시아", "name": "산로", "addr": "서울 강남구 도산대로 518", "menu": "와쇼쿠(일본 정찬) 코스", "ig": "@sanro_seoul", "igurl": "https://www.instagram.com/sanro_seoul/", "map": "https://map.naver.com/p/search/%EC%82%B0%EB%A1%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 56, "cat": "아시아", "name": "소수헌", "addr": "서울 중구 만리재로21길 8", "menu": "한옥 스시 오마카세", "ig": "#소수헌", "igurl": "https://www.instagram.com/explore/tags/%EC%86%8C%EC%88%98%ED%97%8C/", "map": "https://map.naver.com/p/search/%EC%86%8C%EC%88%98%ED%97%8C%20%EC%A4%91%EA%B5%AC", "status": "확인"}, {"no": 57, "cat": "아시아", "name": "영동포차나", "addr": "서울 강남구 언주로148길 14", "menu": "방문 전 메뉴 확인", "ig": "#영동포차나", "igurl": "https://www.instagram.com/explore/tags/%EC%98%81%EB%8F%99%ED%8F%AC%EC%B0%A8%EB%82%98/", "map": "https://map.naver.com/p/search/%EC%98%81%EB%8F%99%ED%8F%AC%EC%B0%A8%EB%82%98%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 58, "cat": "아시아", "name": "유유안", "addr": "서울 종로구 새문안로 97", "menu": "광둥식 중식 · 딤섬 (포시즌스 호텔)", "ig": "#유유안", "igurl": "https://www.instagram.com/explore/tags/%EC%9C%A0%EC%9C%A0%EC%95%88/", "map": "https://map.naver.com/p/search/%EC%9C%A0%EC%9C%A0%EC%95%88%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 59, "cat": "아시아", "name": "정대", "addr": "서울 강남구 도산대로 501", "menu": "방문 전 메뉴 확인", "ig": "#정대", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%95%EB%8C%80/", "map": "https://map.naver.com/p/search/%EC%A0%95%EB%8C%80%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 60, "cat": "아시아", "name": "진진", "addr": "서울 마포구 월드컵북로1길 60", "menu": "멘보샤 · 대게살볶음", "ig": "#진진", "igurl": "https://www.instagram.com/explore/tags/%EC%A7%84%EC%A7%84/", "map": "https://map.naver.com/p/search/%EC%A7%84%EC%A7%84%20%EB%A7%88%ED%8F%AC%EA%B5%AC", "status": "참고"}, {"no": 61, "cat": "아시아", "name": "팔선", "addr": "서울 중구 동호로 249", "menu": "광둥식 중식 (서울신라호텔)", "ig": "#팔선", "igurl": "https://www.instagram.com/explore/tags/%ED%8C%94%EC%84%A0/", "map": "https://map.naver.com/p/search/%ED%8C%94%EC%84%A0%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 62, "cat": "아시아", "name": "플레이버 타운", "addr": "서울 성동구 서울숲4길 18-7", "menu": "모던 아시안 (점심 영업)", "ig": "#플레이버타운", "igurl": "https://www.instagram.com/explore/tags/%ED%94%8C%EB%A0%88%EC%9D%B4%EB%B2%84%ED%83%80%EC%9A%B4/", "map": "https://map.naver.com/p/search/%ED%94%8C%EB%A0%88%EC%9D%B4%EB%B2%84%20%ED%83%80%EC%9A%B4%20%EC%84%B1%EB%8F%99%EA%B5%AC", "status": "확인"}, {"no": 63, "cat": "아시아", "name": "하쿠시", "addr": "서울 강남구 언주로157길 8-4", "menu": "방문 전 메뉴 확인", "ig": "#하쿠시", "igurl": "https://www.instagram.com/explore/tags/%ED%95%98%EC%BF%A0%EC%8B%9C/", "map": "https://map.naver.com/p/search/%ED%95%98%EC%BF%A0%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 64, "cat": "아시아", "name": "호라파", "addr": "서울 종로구 자하문로 37-1", "menu": "태국 요리", "ig": "#호라파", "igurl": "https://www.instagram.com/explore/tags/%ED%98%B8%EB%9D%BC%ED%8C%8C/", "map": "https://map.naver.com/p/search/%ED%98%B8%EB%9D%BC%ED%8C%8C%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 65, "cat": "아시아", "name": "호빈", "addr": "서울 중구 동호로 287", "menu": "중식", "ig": "#호빈", "igurl": "https://www.instagram.com/explore/tags/%ED%98%B8%EB%B9%88/", "map": "https://map.naver.com/p/search/%ED%98%B8%EB%B9%88%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 66, "cat": "그릴", "name": "금돼지식당", "addr": "서울 중구 다산로 149", "menu": "본삼겹", "ig": "#금돼지식당", "igurl": "https://www.instagram.com/explore/tags/%EA%B8%88%EB%8F%BC%EC%A7%80%EC%8B%9D%EB%8B%B9/", "map": "https://map.naver.com/p/search/%EA%B8%88%EB%8F%BC%EC%A7%80%EC%8B%9D%EB%8B%B9%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 67, "cat": "그릴", "name": "김인복의 광평", "addr": "서울 강남구 영동대로106길 45", "menu": "방문 전 메뉴 확인", "ig": "#김인복의광평", "igurl": "https://www.instagram.com/explore/tags/%EA%B9%80%EC%9D%B8%EB%B3%B5%EC%9D%98%EA%B4%91%ED%8F%89/", "map": "https://map.naver.com/p/search/%EA%B9%80%EC%9D%B8%EB%B3%B5%EC%9D%98%20%EA%B4%91%ED%8F%89%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 68, "cat": "그릴", "name": "남영돈", "addr": "서울 용산구 한강대로80길 17", "menu": "가브리살 · 항정살", "ig": "#남영돈", "igurl": "https://www.instagram.com/explore/tags/%EB%82%A8%EC%98%81%EB%8F%88/", "map": "https://map.naver.com/p/search/%EB%82%A8%EC%98%81%EB%8F%88%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "확인"}, {"no": 69, "cat": "그릴", "name": "몽탄", "addr": "서울 용산구 백범로99길 50", "menu": "우대갈비", "ig": "#몽탄", "igurl": "https://www.instagram.com/explore/tags/%EB%AA%BD%ED%83%84/", "map": "https://map.naver.com/p/search/%EB%AA%BD%ED%83%84%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "확인"}, {"no": 70, "cat": "그릴", "name": "벽제갈비 더청담", "addr": "서울 강남구 도산대로81길 25", "menu": "한우 갈비", "ig": "#벽제갈비더청담", "igurl": "https://www.instagram.com/explore/tags/%EB%B2%BD%EC%A0%9C%EA%B0%88%EB%B9%84%EB%8D%94%EC%B2%AD%EB%8B%B4/", "map": "https://map.naver.com/p/search/%EB%B2%BD%EC%A0%9C%EA%B0%88%EB%B9%84%20%EB%8D%94%EC%B2%AD%EB%8B%B4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 71, "cat": "그릴", "name": "본앤브레드", "addr": "서울 성동구 마장로42길 1", "menu": "한우 오마카세", "ig": "#본앤브레드", "igurl": "https://www.instagram.com/explore/tags/%EB%B3%B8%EC%95%A4%EB%B8%8C%EB%A0%88%EB%93%9C/", "map": "https://map.naver.com/p/search/%EB%B3%B8%EC%95%A4%EB%B8%8C%EB%A0%88%EB%93%9C%20%EC%84%B1%EB%8F%99%EA%B5%AC", "status": "참고"}, {"no": 72, "cat": "그릴", "name": "산청숯불가든", "addr": "서울 중구 을지로 114-6", "menu": "방문 전 메뉴 확인", "ig": "#산청숯불가든", "igurl": "https://www.instagram.com/explore/tags/%EC%82%B0%EC%B2%AD%EC%88%AF%EB%B6%88%EA%B0%80%EB%93%A0/", "map": "https://map.naver.com/p/search/%EC%82%B0%EC%B2%AD%EC%88%AF%EB%B6%88%EA%B0%80%EB%93%A0%20%EC%A4%91%EA%B5%AC", "status": "미정"}, {"no": 73, "cat": "그릴", "name": "삼원가든", "addr": "서울 강남구 언주로 835", "menu": "양념갈비", "ig": "#삼원가든", "igurl": "https://www.instagram.com/explore/tags/%EC%82%BC%EC%9B%90%EA%B0%80%EB%93%A0/", "map": "https://map.naver.com/p/search/%EC%82%BC%EC%9B%90%EA%B0%80%EB%93%A0%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 74, "cat": "그릴", "name": "영동장어", "addr": "서울 강남구 언주로148길 8", "menu": "장어구이", "ig": "#영동장어", "igurl": "https://www.instagram.com/explore/tags/%EC%98%81%EB%8F%99%EC%9E%A5%EC%96%B4/", "map": "https://map.naver.com/p/search/%EC%98%81%EB%8F%99%EC%9E%A5%EC%96%B4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 75, "cat": "그릴", "name": "이목 스모크다이닝", "addr": "서울 강남구 압구정로2길 6", "menu": "훈연 한우 코스", "ig": "#이목스모크다이닝", "igurl": "https://www.instagram.com/explore/tags/%EC%9D%B4%EB%AA%A9%EC%8A%A4%EB%AA%A8%ED%81%AC%EB%8B%A4%EC%9D%B4%EB%8B%9D/", "map": "https://map.naver.com/p/search/%EC%9D%B4%EB%AA%A9%20%EC%8A%A4%EB%AA%A8%ED%81%AC%EB%8B%A4%EC%9D%B4%EB%8B%9D%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 76, "cat": "채식", "name": "고사리 익스프레스 신당", "addr": "서울 중구 퇴계로85길 12-10", "menu": "방문 전 메뉴 확인", "ig": "#고사리익스프레스신당", "igurl": "https://www.instagram.com/explore/tags/%EA%B3%A0%EC%82%AC%EB%A6%AC%EC%9D%B5%EC%8A%A4%ED%94%84%EB%A0%88%EC%8A%A4%EC%8B%A0%EB%8B%B9/", "map": "https://map.naver.com/p/search/%EA%B3%A0%EC%82%AC%EB%A6%AC%20%EC%9D%B5%EC%8A%A4%ED%94%84%EB%A0%88%EC%8A%A4%20%EC%8B%A0%EB%8B%B9%20%EC%A4%91%EA%B5%AC", "status": "미정"}, {"no": 77, "cat": "채식", "name": "레귬", "addr": "서울 강남구 강남대로 652", "menu": "비건 파인다이닝 코스", "ig": "#레귬", "igurl": "https://www.instagram.com/explore/tags/%EB%A0%88%EA%B7%AC/", "map": "https://map.naver.com/p/search/%EB%A0%88%EA%B7%AC%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 78, "cat": "채식", "name": "마지", "addr": "서울 종로구 자하문로5길 19", "menu": "사찰음식", "ig": "#마지", "igurl": "https://www.instagram.com/explore/tags/%EB%A7%88%EC%A7%80/", "map": "https://map.naver.com/p/search/%EB%A7%88%EC%A7%80%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 79, "cat": "채식", "name": "발우공양", "addr": "서울 종로구 우정국로 56", "menu": "사찰음식 코스", "ig": "#발우공양", "igurl": "https://www.instagram.com/explore/tags/%EB%B0%9C%EC%9A%B0%EA%B3%B5%EC%96%91/", "map": "https://map.naver.com/p/search/%EB%B0%9C%EC%9A%B0%EA%B3%B5%EC%96%91%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 80, "cat": "채식", "name": "베이스 이즈 나이스", "addr": "서울 마포구 도화2길 20", "menu": "채식 정식", "ig": "#베이스이즈나이스", "igurl": "https://www.instagram.com/explore/tags/%EB%B2%A0%EC%9D%B4%EC%8A%A4%EC%9D%B4%EC%A6%88%EB%82%98%EC%9D%B4%EC%8A%A4/", "map": "https://map.naver.com/p/search/%EB%B2%A0%EC%9D%B4%EC%8A%A4%20%EC%9D%B4%EC%A6%88%20%EB%82%98%EC%9D%B4%EC%8A%A4%20%EB%A7%88%ED%8F%AC%EA%B5%AC", "status": "참고"}, {"no": 81, "cat": "채식", "name": "비움", "addr": "서울 강남구 학동로97길 41", "menu": "오신채 없는 발효 한식 코스", "ig": "@biumseoul", "igurl": "https://www.instagram.com/biumseoul/", "map": "https://map.naver.com/p/search/%EB%B9%84%EC%9B%80%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 82, "cat": "채식", "name": "산촌", "addr": "서울 종로구 인사동길 30-13", "menu": "사찰음식 한정식", "ig": "#산촌", "igurl": "https://www.instagram.com/explore/tags/%EC%82%B0%EC%B4%8C/", "map": "https://map.naver.com/p/search/%EC%82%B0%EC%B4%8C%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "참고"}, {"no": 83, "cat": "채식", "name": "양출 서울", "addr": "서울 강남구 언주로135길 34", "menu": "방문 전 메뉴 확인", "ig": "#양출서울", "igurl": "https://www.instagram.com/explore/tags/%EC%96%91%EC%B6%9C%EC%84%9C%EC%9A%B8/", "map": "https://map.naver.com/p/search/%EC%96%91%EC%B6%9C%20%EC%84%9C%EC%9A%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 84, "cat": "바&펍", "name": "르챔버", "addr": "서울 강남구 도산대로55길 42", "menu": "클래식 칵테일 · 위스키", "ig": "#르챔버", "igurl": "https://www.instagram.com/explore/tags/%EB%A5%B4%EC%B1%94%EB%B2%84/", "map": "https://map.naver.com/p/search/%EB%A5%B4%EC%B1%94%EB%B2%84%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 85, "cat": "바&펍", "name": "바 참", "addr": "서울 종로구 자하문로7길 34", "menu": "전통주·한국 식재료 칵테일", "ig": "#바참", "igurl": "https://www.instagram.com/explore/tags/%EB%B0%94%EC%B0%B8/", "map": "https://map.naver.com/p/search/%EB%B0%94%20%EC%B0%B8%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "확인"}, {"no": 86, "cat": "바&펍", "name": "백곰막걸리", "addr": "서울 중구 세종대로21길 65", "menu": "막걸리·전통주와 안주", "ig": "#백곰막걸리", "igurl": "https://www.instagram.com/explore/tags/%EB%B0%B1%EA%B3%B0%EB%A7%89%EA%B1%B8%EB%A6%AC/", "map": "https://map.naver.com/p/search/%EB%B0%B1%EA%B3%B0%EB%A7%89%EA%B1%B8%EB%A6%AC%20%EC%A4%91%EA%B5%AC", "status": "참고"}, {"no": 87, "cat": "바&펍", "name": "소코", "addr": "서울 용산구 한남대로20길 47", "menu": "방문 전 메뉴 확인", "ig": "#소코", "igurl": "https://www.instagram.com/explore/tags/%EC%86%8C%EC%BD%94/", "map": "https://map.naver.com/p/search/%EC%86%8C%EC%BD%94%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "미정"}, {"no": 88, "cat": "바&펍", "name": "앨리스 청담", "addr": "서울 강남구 도산대로55길 47", "menu": "트럼프 카드 시그니처 칵테일", "ig": "#앨리스청담", "igurl": "https://www.instagram.com/explore/tags/%EC%95%A8%EB%A6%AC%EC%8A%A4%EC%B2%AD%EB%8B%B4/", "map": "https://map.naver.com/p/search/%EC%95%A8%EB%A6%AC%EC%8A%A4%20%EC%B2%AD%EB%8B%B4%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 89, "cat": "바&펍", "name": "장생건강원", "addr": "서울 강남구 강남대로124길 23", "menu": "방문 전 메뉴 확인", "ig": "#장생건강원", "igurl": "https://www.instagram.com/explore/tags/%EC%9E%A5%EC%83%9D%EA%B1%B4%EA%B0%95%EC%9B%90/", "map": "https://map.naver.com/p/search/%EC%9E%A5%EC%83%9D%EA%B1%B4%EA%B0%95%EC%9B%90%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "미정"}, {"no": 90, "cat": "바&펍", "name": "제스트", "addr": "서울 강남구 도산대로55길 26", "menu": "제로웨이스트 칵테일 (포스트맨 · 포츈)", "ig": "#제스트", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%9C%EC%8A%A4%ED%8A%B8/", "map": "https://map.naver.com/p/search/%EC%A0%9C%EC%8A%A4%ED%8A%B8%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "확인"}, {"no": 91, "cat": "바&펍", "name": "참제철", "addr": "서울 종로구 사직로 133-10", "menu": "핑크 플레인 (제철 칵테일)", "ig": "#참제철", "igurl": "https://www.instagram.com/explore/tags/%EC%B0%B8%EC%A0%9C%EC%B2%A0/", "map": "https://map.naver.com/p/search/%EC%B0%B8%EC%A0%9C%EC%B2%A0%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "확인"}, {"no": 92, "cat": "디저트&카페", "name": "김씨부인", "addr": "서울 서초구 서래로1길 8", "menu": "방문 전 메뉴 확인", "ig": "#김씨부인", "igurl": "https://www.instagram.com/explore/tags/%EA%B9%80%EC%94%A8%EB%B6%80%EC%9D%B8/", "map": "https://map.naver.com/p/search/%EA%B9%80%EC%94%A8%EB%B6%80%EC%9D%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC", "status": "미정"}, {"no": 93, "cat": "디저트&카페", "name": "메종엠오", "addr": "서울 서초구 방배로26길 22", "menu": "프렌치 디저트 · 구움과자", "ig": "#메종엠오", "igurl": "https://www.instagram.com/explore/tags/%EB%A9%94%EC%A2%85%EC%97%A0%EC%98%A4/", "map": "https://map.naver.com/p/search/%EB%A9%94%EC%A2%85%EC%97%A0%EC%98%A4%20%EC%84%9C%EC%B4%88%EA%B5%AC", "status": "참고"}, {"no": 94, "cat": "디저트&카페", "name": "소나", "addr": "서울 강남구 강남대로162길 40", "menu": "디저트 코스", "ig": "#소나", "igurl": "https://www.instagram.com/explore/tags/%EC%86%8C%EB%82%98/", "map": "https://map.naver.com/p/search/%EC%86%8C%EB%82%98%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 95, "cat": "디저트&카페", "name": "재인", "addr": "서울 용산구 이태원로54길 48", "menu": "방문 전 메뉴 확인", "ig": "#재인", "igurl": "https://www.instagram.com/explore/tags/%EC%9E%AC%EC%9D%B8/", "map": "https://map.naver.com/p/search/%EC%9E%AC%EC%9D%B8%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "미정"}, {"no": 96, "cat": "디저트&카페", "name": "제이엘 디저트바", "addr": "서울 용산구 대사관로31길 7-2", "menu": "디저트 코스", "ig": "#제이엘디저트바", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%9C%EC%9D%B4%EC%97%98%EB%94%94%EC%A0%80%ED%8A%B8%EB%B0%94/", "map": "https://map.naver.com/p/search/%EC%A0%9C%EC%9D%B4%EC%97%98%20%EB%94%94%EC%A0%80%ED%8A%B8%EB%B0%94%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "참고"}, {"no": 97, "cat": "디저트&카페", "name": "젠제로", "addr": "서울 강남구 선릉로126길 14", "menu": "젤라또", "ig": "#젠제로", "igurl": "https://www.instagram.com/explore/tags/%EC%A0%A0%EC%A0%9C%EB%A1%9C/", "map": "https://map.naver.com/p/search/%EC%A0%A0%EC%A0%9C%EB%A1%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC", "status": "참고"}, {"no": 98, "cat": "디저트&카페", "name": "파티세리 뮤흐", "addr": "서울 용산구 대사관로31길 25-12", "menu": "방문 전 메뉴 확인", "ig": "#파티세리뮤흐", "igurl": "https://www.instagram.com/explore/tags/%ED%8C%8C%ED%8B%B0%EC%84%B8%EB%A6%AC%EB%AE%A4%ED%9D%90/", "map": "https://map.naver.com/p/search/%ED%8C%8C%ED%8B%B0%EC%84%B8%EB%A6%AC%20%EB%AE%A4%ED%9D%90%20%EC%9A%A9%EC%82%B0%EA%B5%AC", "status": "미정"}, {"no": 99, "cat": "디저트&카페", "name": "프릳츠 도화점", "addr": "서울 마포구 새창로2길 17", "menu": "빵 · 스페셜티 커피", "ig": "#프릳츠도화점", "igurl": "https://www.instagram.com/explore/tags/%ED%94%84%EB%A6%B3%EC%B8%A0%EB%8F%84%ED%99%94%EC%A0%90/", "map": "https://map.naver.com/p/search/%ED%94%84%EB%A6%B3%EC%B8%A0%20%EB%8F%84%ED%99%94%EC%A0%90%20%EB%A7%88%ED%8F%AC%EA%B5%AC", "status": "참고"}, {"no": 100, "cat": "디저트&카페", "name": "합 원서점", "addr": "서울 종로구 율곡로 83", "menu": "방문 전 메뉴 확인", "ig": "#합원서점", "igurl": "https://www.instagram.com/explore/tags/%ED%95%A9%EC%9B%90%EC%84%9C%EC%A0%90/", "map": "https://map.naver.com/p/search/%ED%95%A9%20%EC%9B%90%EC%84%9C%EC%A0%90%20%EC%A2%85%EB%A1%9C%EA%B5%AC", "status": "미정"}];
+const CATS = [
+  {k:'한식', id:'kr', en:'KOREAN'}, {k:'양식', id:'we', en:'WESTERN'}, {k:'아시아', id:'as', en:'ASIAN'},
+  {k:'그릴', id:'gr', en:'GRILL'}, {k:'채식', id:'pb', en:'PLANT-BASED'}, {k:'바&펍', id:'bp', en:'BAR & PUB'},
+  {k:'디저트&카페', id:'cd', en:'CAFÉ & DESSERT'}
+];
+const ST = { '확인': {t:'출처확인', c:'ok'}, '참고': {t:'참고', c:'ref'}, '미정': {t:'확인필요', c:'chk'} };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const $ = id => document.getElementById(id);
+
+DATA.forEach(d => { d.gu = d.addr.split(' ')[1] || ''; d.cid = CATS.find(c => c.k === d.cat).id; });
+const total = DATA.length;
+const catCount = Object.fromEntries(CATS.map(c => [c.id, DATA.filter(d => d.cid === c.id).length]));
+const guCount = {}; DATA.forEach(d => guCount[d.gu] = (guCount[d.gu] || 0) + 1);
+const stCount = {}; DATA.forEach(d => stCount[d.status] = (stCount[d.status] || 0) + 1);
+
+const S = { q:'', gu:'', st:'', cat:'', hide:false };
+let V = new Set();
+try { V = new Set(JSON.parse(localStorage.getItem('seoul100-visited') || '[]')); } catch (e) {}
+function saveV() { try { localStorage.setItem('seoul100-visited', JSON.stringify([...V])); } catch (e) {} }
+
+/* 표지 */
+$('facts').innerHTML =
+  `<li><b>${total}</b>곳 선정</li><li><b>${CATS.length}</b>개 분야</li><li><b>${Object.keys(guCount).length}</b>개 자치구</li>` +
+  `<li>출처확인 <b>${stCount['확인']||0}</b></li><li>참고 <b>${stCount['참고']||0}</b></li><li>확인필요 <b>${stCount['미정']||0}</b></li>`;
+$('bar').innerHTML = CATS.map(c => `<a href="#ch-${c.id}" data-c="${c.id}" data-go="${c.id}" style="--n:${catCount[c.id]}" title="${esc(c.k)} ${catCount[c.id]}곳" aria-label="${esc(c.k)} ${catCount[c.id]}곳"></a>`).join('');
+$('toc').innerHTML = CATS.map(c => `<li data-c="${c.id}"><a href="#ch-${c.id}" data-go="${c.id}"><i class="sw"></i><span class="nm">${esc(c.k)}</span><span class="ct">${catCount[c.id]}</span></a></li>`).join('');
+
+/* 도구 막대 */
+$('gu').innerHTML = `<option value="">전체 지역</option>` + Object.entries(guCount).sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0],'ko')).map(([g,n]) => `<option value="${esc(g)}">${esc(g)} (${n})</option>`).join('');
+$('st').innerHTML = `<option value="">전체 검증 상태</option>` + ['확인','참고','미정'].map(s => `<option value="${s}">${ST[s].t} (${stCount[s]||0})</option>`).join('');
+function renderChips() {
+  $('chips').innerHTML = `<button type="button" class="chip" data-cat="" aria-pressed="${S.cat===''}">전체 <span>${total}</span></button>` +
+    CATS.map(c => `<button type="button" class="chip" data-c="${c.id}" data-cat="${c.id}" aria-pressed="${S.cat===c.id}"><i></i>${esc(c.k)} <span>${catCount[c.id]}</span></button>`).join('');
+}
+
+function match(d) {
+  if (S.cat && d.cid !== S.cat) return false;
+  if (S.gu && d.gu !== S.gu) return false;
+  if (S.st && d.status !== S.st) return false;
+  if (S.hide && V.has(d.no)) return false;
+  if (S.q) {
+    const hay = (d.name + d.menu + d.addr + d.ig + d.cat).toLowerCase().replace(/\s/g, '');
+    if (!hay.includes(S.q.toLowerCase().replace(/\s/g, ''))) return false;
+  }
+  return true;
+}
+
+function entryHtml(d) {
+  const st = ST[d.status];
+  const none = d.status === '미정';
+  const igLabel = d.ig.startsWith('@') ? `인스타그램 ${d.ig}` : `인스타 후기 ${d.ig}`;
+  const done = V.has(d.no);
+  return `<article class="entry${done ? ' done' : ''}${d.no === cur ? ' sel' : ''}" id="e-${d.no}" data-no="${d.no}">
+    <div class="no">${String(d.no).padStart(3,'0')}</div>
+    <div class="body-main">
+      <div class="top"><h3><button type="button" class="open" aria-haspopup="dialog">${esc(d.name)}</button></h3><span class="gu">${esc(d.gu)}</span></div>
+      <p class="menu${none ? ' none' : ''}">${none ? '시그니처 메뉴는 방문 전 확인 필요' : esc(d.menu)}</p>
+      <p class="addr">${esc(d.addr)}</p>
+    </div>
+    <div></div>
+    <div class="foot">
+      <div class="links">
+        <a href="${esc(d.igurl)}" target="_blank" rel="noopener noreferrer">${esc(igLabel)}</a>
+        <a href="${esc(d.map)}" target="_blank" rel="noopener noreferrer">네이버지도</a>
+      </div>
+      <span class="vchip ${st.c}" title="${esc(st.t)}">${esc(st.t)}</span>
+      <label class="visit"><input type="checkbox" id="v-${d.no}" data-v="${d.no}"${done ? ' checked' : ''}> 다녀옴</label>
+    </div>
+  </article>`;
+}
+
+function render() {
+  let shown = 0;
+  const html = CATS.map(c => {
+    const all = DATA.filter(d => d.cid === c.id);
+    const list = all.filter(match);
+    if (!list.length) return '';
+    shown += list.length;
+    const cnt = list.length === all.length ? `${all.length}곳` : `${list.length} / ${all.length}곳`;
+    return `<section class="chapter" id="ch-${c.id}" data-c="${c.id}">
+      <div class="chead"><i class="sw"></i><h2>${esc(c.k)}</h2><span class="en">${esc(c.en)}</span><span class="cnt">${cnt}</span></div>
+      <div class="list">${list.map(entryHtml).join('')}</div>
+    </section>`;
+  }).join('');
+  $('main').innerHTML = html || `<div class="empty"><p>조건에 맞는 업소가 없음. 검색어나 필터를 줄여 보세요.</p><button type="button" class="linkbtn" data-reset="1">필터 초기화</button></div>`;
+  $('shown').textContent = shown;
+  $('vcount').textContent = V.size;
+  renderChips();
+}
+
+function resetAll() {
+  S.q = ''; S.gu = ''; S.st = ''; S.cat = ''; S.hide = false;
+  $('q').value = ''; $('gu').value = ''; $('st').value = ''; $('hide').checked = false;
+}
+
+$('q').addEventListener('input', e => { S.q = e.target.value.trim(); render(); });
+$('gu').addEventListener('change', e => { S.gu = e.target.value; render(); });
+$('st').addEventListener('change', e => { S.st = e.target.value; render(); });
+$('hide').addEventListener('change', e => { S.hide = e.target.checked; render(); });
+$('reset').addEventListener('click', () => { resetAll(); render(); });
+$('chips').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  S.cat = b.dataset.cat; render();
+});
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-reset]')) { resetAll(); render(); return; }
+  const go = e.target.closest('[data-go]');
+  if (go) {
+    const id = 'ch-' + go.dataset.go;
+    if (!$(id)) { resetAll(); render(); }
+    e.preventDefault();
+    const el = $(id); if (el) el.scrollIntoView({ block: 'start' });
+  }
+});
+function setVisited(no, on) {
+  if (on) V.add(no); else V.delete(no);
+  saveV();
+  $('vcount').textContent = V.size;
+  const art = $('e-' + no);
+  if (art) { art.classList.toggle('done', on); const cb = art.querySelector('[data-v]'); if (cb) cb.checked = on; }
+  if (cur === no) $('dvisit').checked = on;
+  if (S.hide && on) render();
+}
+$('main').addEventListener('change', e => {
+  const cb = e.target.closest('[data-v]'); if (!cb) return;
+  setVisited(+cb.dataset.v, cb.checked);
+});
+
+/* 상세 패널 */
+const STNOTE = {
+  '확인': '미쉐린, 언론 등에서 확인된 정보임.',
+  '참고': '일반 정보 기준이며 방문 전 재확인이 필요함.',
+  '미정': '시그니처 메뉴를 확인하지 못한 항목임. 방문 전 확인이 필요함.'
+};
+function order() { return DATA.filter(d => match(d) || d.no === cur); }
+function fillDrawer() {
+  const d = DATA.find(x => x.no === cur); if (!d) return;
+  const c = CATS.find(x => x.id === d.cid);
+  const st = ST[d.status];
+  const dr = $('drawer'); dr.dataset.c = d.cid;
+  $('dno').textContent = String(d.no).padStart(3, '0');
+  $('dcat').textContent = c.k + ' · ' + c.en;
+  $('dtitle').textContent = d.name;
+  $('dgu').textContent = d.gu;
+  const none = d.status === '미정';
+  $('dmenu').textContent = none ? '방문 전 확인 필요' : d.menu;
+  $('daddr').textContent = d.addr;
+  $('dcopied').textContent = '';
+  const official = d.ig.startsWith('@');
+  $('dig').textContent = (official ? '인스타그램 ' : '인스타 후기 ') + d.ig;
+  $('dig').href = d.igurl;
+  $('dignote').textContent = official ? '공식 계정으로 확인된 곳임.' : '공식 계정이 확인되지 않아 해시태그 검색으로 연결함. 실제 방문 후기 사진을 볼 수 있음.';
+  $('dmap').href = d.map;
+  const s = $('dst'); s.className = 'vchip ' + st.c; s.textContent = st.t;
+  $('dstnote').textContent = STNOTE[d.status];
+  $('dvisit').checked = V.has(d.no);
+  const list = order(), i = list.findIndex(x => x.no === cur);
+  $('dpos').textContent = (i + 1) + ' / ' + list.length;
+  $('dprev').disabled = i <= 0;
+  $('dnext').disabled = i >= list.length - 1;
+  document.querySelectorAll('.entry.sel').forEach(el => el.classList.remove('sel'));
+  const art = $('e-' + cur); if (art) art.classList.add('sel');
+}
+let cur = null, lastFocus = null;
+function openDrawer(no, trigger) {
+  const first = $('drawer').hidden;
+  cur = no;
+  if (first) lastFocus = trigger || null;
+  fillDrawer();
+  $('scrim').hidden = false; $('drawer').hidden = false;
+  document.documentElement.style.overflow = 'hidden';
+  if (first) $('dclose').focus();
+}
+function closeDrawer() {
+  if ($('drawer').hidden) return;
+  const no = cur; cur = null;
+  $('drawer').hidden = true; $('scrim').hidden = true;
+  document.documentElement.style.overflow = '';
+  const art = $('e-' + no); if (art) art.classList.remove('sel');
+  const back = (lastFocus && document.contains(lastFocus)) ? lastFocus : (art && art.querySelector('.open'));
+  if (back) back.focus();
+}
+function step(n) {
+  const list = order(), i = list.findIndex(x => x.no === cur), j = i + n;
+  if (i < 0 || j < 0 || j >= list.length) return;
+  cur = list[j].no; fillDrawer();
+  const art = $('e-' + cur); if (art) art.scrollIntoView({ block: 'nearest' });
+}
+$('main').addEventListener('click', e => {
+  if (e.target.closest('a, label, input')) return;
+  const art = e.target.closest('.entry'); if (!art) return;
+  openDrawer(+art.dataset.no, art.querySelector('.open'));
+});
+$('dclose').addEventListener('click', closeDrawer);
+$('scrim').addEventListener('click', closeDrawer);
+$('dprev').addEventListener('click', () => step(-1));
+$('dnext').addEventListener('click', () => step(1));
+$('dvisit').addEventListener('change', e => { if (cur != null) setVisited(cur, e.target.checked); });
+$('dcopy').addEventListener('click', async () => {
+  const d = DATA.find(x => x.no === cur); if (!d) return;
+  try { await navigator.clipboard.writeText(d.addr); $('dcopied').textContent = '복사됨'; }
+  catch (err) {
+    const r = document.createRange(); r.selectNodeContents($('daddr'));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    $('dcopied').textContent = '주소를 선택했으니 직접 복사해 주세요';
+  }
+});
+document.addEventListener('keydown', e => {
+  if ($('drawer').hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); return; }
+  if (e.key === 'Tab') {
+    const f = [...$('drawer').querySelectorAll('button:not(:disabled), a[href], input')].filter(x => x.offsetParent !== null);
+    if (!f.length) return;
+    const a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+});
+
+render();
+</script>
