@@ -41,19 +41,30 @@ button { font: inherit; }
 .wrap { max-width: 1120px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
 
 /* 지도 */
-.mapbox { position: sticky; top: 0; z-index: 20; height: var(--map-h); background: var(--line); border-bottom: 2px solid var(--ink); padding-top: env(safe-area-inset-top, 0px); }
+.mapbox { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 2px solid var(--ink); padding-top: env(safe-area-inset-top, 0px); }
+.mapview { position: relative; height: var(--map-h); background: var(--line); }
+.mapbox.collapsed .mapview { height: 0; overflow: hidden; visibility: hidden; }
 #map { width: 100%; height: 100%; } /* 네이버 SDK가 컨테이너에 position:relative 를 직접 지정하므로 absolute 대신 크기를 명시함 */
-.mapbox.nomap { height: auto; min-height: 0; position: static; }
-.mapbox.nomap #map, .mapbox.nomap .zoom { display: none; }
+.mapbox.nomap { position: static; }
+.mapbox.nomap .mapview { height: auto; }
+.mapbox.nomap #map, .mapbox.nomap .zoom, .mapbox.nomap .maphandle { display: none; }
+
+/* 지도 아래 조절 바: 끌어서 높이 조절, 버튼으로 접기·펴기 */
+.maphandle { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 8px; border-top: 1px solid var(--line); }
+.maphandle .dbtn { flex: none; }
+.grip { flex: 1; min-width: 0; height: 44px; display: grid; place-items: center; cursor: ns-resize; touch-action: none; user-select: none; -webkit-user-select: none; }
+.grip span { width: 56px; height: 5px; border-radius: 3px; background: var(--muted); opacity: .6; }
+.grip:hover span, .grip:focus-visible span { opacity: 1; background: var(--accent); }
+.mapbox.collapsed .grip { cursor: default; opacity: .35; }
 .mapmsg { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; color: var(--muted); font-size: 14px; pointer-events: none; }
 .mapbox.nomap .mapmsg { position: static; padding: 18px 16px; text-align: left; background: var(--surface); color: var(--ink); }
 .mapmsg[hidden] { display: none; }
-.zoom { position: absolute; left: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 5; display: grid; gap: 0; border: 1px solid var(--ink); background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+.zoom { position: absolute; left: 10px; top: 10px; z-index: 5; display: grid; gap: 0; border: 1px solid var(--ink); background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,.25); }
 .zoom button { width: 44px; height: 44px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 24px; line-height: 1; cursor: pointer; font-family: var(--font-mono); }
 .zoom button:last-child { border-bottom: 0; font-size: 12px; font-family: var(--font-body); font-weight: 600; }
 .zoom[hidden] { display: none; }
 .zoom button:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
-.mapnote { position: absolute; right: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 5; max-width: calc(100% - 80px); background: var(--surface); border: 1px solid var(--line); padding: 4px 10px; font-size: 12px; color: var(--muted); }
+.mapnote { position: absolute; right: 10px; top: 10px; z-index: 5; max-width: calc(100% - 80px); background: var(--surface); border: 1px solid var(--line); padding: 4px 10px; font-size: 12px; color: var(--muted); }
 .mapnote:empty { display: none; }
 
 /* 핀: 색에 더해 글자(분야 첫 글자)로도 구분함. 터치 영역 40px */
@@ -160,17 +171,23 @@ input[type="search"], select { width: 100%; font: inherit; font-size: 14px; colo
 <body>
 
 <section class="mapbox" id="mapbox" aria-label="서울미식 100선 지도">
-  <div id="map"></div>
-  <div class="zoom" id="zoom" hidden>
-    <button type="button" id="zin" aria-label="지도 확대">+</button>
-    <button type="button" id="zout" aria-label="지도 축소">−</button>
-    <button type="button" id="zfit" aria-label="표시 중인 업소 전체 보기">전체</button>
+  <div class="mapview" id="mapview">
+    <div id="map"></div>
+    <div class="zoom" id="zoom" hidden>
+      <button type="button" id="zin" aria-label="지도 확대">+</button>
+      <button type="button" id="zout" aria-label="지도 축소">−</button>
+      <button type="button" id="zfit" aria-label="표시 중인 업소 전체 보기">전체</button>
+    </div>
+    <div class="mapnote" id="mapnote" aria-live="polite"></div>
+    <div class="mapmsg" id="mapmsg">지도를 불러오는 중임</div>
+    <div class="pick" id="pick" role="group" aria-label="같은 주소의 업소" hidden>
+      <header><b id="picktitle"></b><button type="button" class="dbtn" id="pickclose">닫기</button></header>
+      <ul id="picklist"></ul>
+    </div>
   </div>
-  <div class="mapnote" id="mapnote" aria-live="polite"></div>
-  <div class="mapmsg" id="mapmsg">지도를 불러오는 중임</div>
-  <div class="pick" id="pick" role="group" aria-label="같은 주소의 업소" hidden>
-    <header><b id="picktitle"></b><button type="button" class="dbtn" id="pickclose">닫기</button></header>
-    <ul id="picklist"></ul>
+  <div class="maphandle">
+    <button type="button" class="dbtn" id="mtoggle" aria-controls="mapview" aria-expanded="true">지도 접기 ▲</button>
+    <div class="grip" id="mgrip" role="separator" aria-orientation="horizontal" tabindex="0" aria-label="지도 높이 조절. 위아래로 끌거나 위아래 화살표 키로 조절, 더블클릭하면 기본 높이" title="끌어서 지도 높이 조절 (더블클릭: 기본 높이)"><span></span></div>
   </div>
 </section>
 
@@ -299,7 +316,7 @@ function inView(d) {
   try { return map.getBounds().hasLatLng(new naver.maps.LatLng(p.lat, p.lng)); } catch (e) { return true; }
 }
 const matched = () => DATA.filter(match);                                  // 지도와 목록이 공유하는 필터 결과
-const listed = () => { const m = matched(); return S.inview && map ? m.filter(inView) : m; };
+const listed = () => { const m = matched(); return S.inview && map && mapOpen() ? m.filter(inView) : m; };   // 지도를 접으면 범위 필터는 무시함
 
 /* ───── 목록 ───── */
 function entryHtml(d) {
@@ -361,7 +378,7 @@ function loadSdk() {
 function initMap() {
   map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(37.5665, 126.9780), zoom: 11, minZoom: 8, maxZoom: 20,
-    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: false,
+    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: false, scrollWheel: false,
     logoControl: true, logoControlOptions: { position: naver.maps.Position.BOTTOM_LEFT }
   });
   MAPMSG.hidden = true; $('zoom').hidden = false;
@@ -374,7 +391,23 @@ function initMap() {
   });
   naver.maps.Event.addListener(map, 'click', () => { $('pick').hidden = true; });
   window.addEventListener('resize', () => { if (map && map.autoResize) map.autoResize(); });
-  fitAll(false);
+  // 휠: SDK 기본 동작은 한 번 굴릴 때 여러 단계가 움직여 과하므로 끄고, 한 번에 한 단계씩 일정 간격으로만 반영함(커서 위치 기준)
+  let acc = 0, lastT = 0, lockUntil = 0;
+  $('map').addEventListener('wheel', e => {
+    e.preventDefault();
+    const now = performance.now();
+    if (now < lockUntil) return;
+    if (now - lastT > 400) acc = 0;
+    lastT = now;
+    acc += e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+    if (Math.abs(acc) < 60) return;
+    const dir = acc < 0 ? 1 : -1; acc = 0; lockUntil = now + 300;
+    const z = map.getZoom() + dir; if (z < 8 || z > 20) return;
+    const r = $('map').getBoundingClientRect();
+    try { map.zoomBy(dir, map.getProjection().fromOffsetToCoord(new naver.maps.Point(e.clientX - r.left, e.clientY - r.top)), true); }   // 기준은 Point 가 아니라 좌표여야 커서 아래 위치가 유지됨
+    catch (err) { map.setZoom(z, true); }
+  }, { passive: false });
+  if (mapCollapsed) pendingFit = true; else fitAll(false);   // 접은 채로 열렸으면 펼칠 때 맞춤
   rebuildMarkers();
 }
 function fitAll(animate) {
@@ -600,6 +633,57 @@ $('importfile').addEventListener('change', async e => {
     $('datamsg').textContent = `합침: 저장 ${ns.length}곳, 다녀옴 ${nv.length}곳을 현재 기록에 더함`;
   } catch (err) { $('datamsg').textContent = '가져오지 못함: gourmap 에서 내보낸 JSON 파일이 아님'; }
 });
+
+/* ───── 지도 접기·높이 조절(설정은 이 브라우저에 기억함) ───── */
+const MV = $('mapview'), GRIP = $('mgrip'), MH = { min: 120, key: 'gourmap-maph', ck: 'gourmap-mapc' };
+let mapCollapsed = !!lsGet(MH.ck, false), pendingFit = false, rlFrame = 0, drag = null;
+const mapOpen = () => !mapCollapsed;
+const maxH = () => Math.max(MH.min + 40, Math.round(innerHeight * 0.8));
+function relayoutMap() {
+  if (!map) return;
+  cancelAnimationFrame(rlFrame);
+  rlFrame = requestAnimationFrame(() => { if (map && map.autoResize) map.autoResize(); });
+}
+function setMapH(px, save) {
+  px = Math.max(MH.min, Math.min(maxH(), Math.round(px)));
+  document.documentElement.style.setProperty('--map-h', px + 'px');
+  GRIP.setAttribute('aria-valuemin', MH.min); GRIP.setAttribute('aria-valuemax', maxH()); GRIP.setAttribute('aria-valuenow', px);
+  if (save) lsSet(MH.key, px);
+  relayoutMap();
+  return px;
+}
+function resetMapH() { document.documentElement.style.removeProperty('--map-h'); lsSet(MH.key, null); relayoutMap(); }
+function applyCollapsed() {
+  MAPBOX.classList.toggle('collapsed', mapCollapsed);
+  $('mtoggle').textContent = mapCollapsed ? '지도 펴기 ▼' : '지도 접기 ▲';
+  $('mtoggle').setAttribute('aria-expanded', String(!mapCollapsed));
+  GRIP.setAttribute('aria-disabled', String(mapCollapsed)); GRIP.tabIndex = mapCollapsed ? -1 : 0;
+}
+function toggleMap() {
+  mapCollapsed = !mapCollapsed; lsSet(MH.ck, mapCollapsed); applyCollapsed();
+  if (mapCollapsed) $('pick').hidden = true;
+  else if (map) {
+    relayoutMap();
+    requestAnimationFrame(() => { if (pendingFit) { fitAll(false); pendingFit = false; } rebuildMarkers(); });
+  }
+  if (S.inview) renderList();
+}
+GRIP.addEventListener('pointerdown', e => { if (mapCollapsed) return; drag = { y: e.clientY, h: MV.offsetHeight }; GRIP.setPointerCapture(e.pointerId); e.preventDefault(); });
+GRIP.addEventListener('pointermove', e => { if (drag) setMapH(drag.h + e.clientY - drag.y, false); });
+const endDrag = () => { if (!drag) return; drag = null; lsSet(MH.key, MV.offsetHeight); rebuildMarkers(); if (S.inview) renderList(); };
+GRIP.addEventListener('pointerup', endDrag);
+GRIP.addEventListener('pointercancel', endDrag);
+GRIP.addEventListener('keydown', e => {
+  if (mapCollapsed) return;
+  const h = MV.offsetHeight; let n = null;
+  if (e.key === 'ArrowUp') n = h - 24; else if (e.key === 'ArrowDown') n = h + 24; else if (e.key === 'Home') n = MH.min; else if (e.key === 'End') n = maxH();
+  if (n == null) return;
+  e.preventDefault(); setMapH(n, true);
+});
+GRIP.addEventListener('dblclick', () => { if (!mapCollapsed) resetMapH(); });
+$('mtoggle').addEventListener('click', toggleMap);
+window.addEventListener('resize', () => { const h = lsGet(MH.key, null); if (h) setMapH(h, false); });
+(function initMapLayout() { const h = lsGet(MH.key, null); if (h) setMapH(h, false); applyCollapsed(); })();
 
 /* ───── 시작: 목록은 지도와 무관하게 먼저 동작함(R7) ───── */
 (async function boot() {
